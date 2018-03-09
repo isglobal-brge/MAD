@@ -84,7 +84,13 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol, name.geno = c("AA",
 
     Bdev[temp == 0] <- 0
     qng <- qnorm(Bdev)
+    
     m <- median(qng, na.rm = TRUE)
+    if (is.infinite(m) & m > 0)
+      m <- 100
+    if (is.infinite(m) & m < 0)
+      m <- -100  
+        
     Bdev <- qng - m
     Bdev[temp == 0] <- 0
     Bdev[is.na(Bdev)] <- 0

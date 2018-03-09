@@ -16,7 +16,7 @@ void bDeviation(char **geno, double *baf, int *numprobes, double *out)
     }
     else
     {
-      if(geno[j][0]!=geno[j][1] & geno[j][0]!='N')
+      if((geno[j][0]!=geno[j][1]) & (geno[j][0]!='N'))
       {
         out[j]=fabs(baf[j]-0.5);
       }
