@@ -41,7 +41,7 @@ devtools::install_github("isglobal-brge/R-GADA")
 After that, MAD can be installed by
 
 ```{r install_mad, eval=FALSE}
-devtools::install_github("isglobal-brge/mad")
+devtools::install_github("isglobal-brge/MAD")
 ```
 
 
