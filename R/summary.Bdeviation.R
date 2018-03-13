@@ -149,7 +149,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
             SegLen=as.integer(Segments.autosomes$LenProbe),
             SegAmp=as.double(Segments.autosomes$MeanAmp),
             K=as.integer(K.autosomes),
-            BaseAmp=double(1),PACKAGE="gada")
+            BaseAmp=double(1), PACKAGE="gada")
 
      BaseAmp <- ifelse(is.na(aux$BaseAmp),0,aux$BaseAmp)
 
@@ -161,7 +161,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
               SegLen=as.integer(Segments.X$LenProbe),
               SegAmp=as.double(Segments.X$MeanAmp),
               K=as.integer(K.X),
-              BaseAmp=double(1),PACKAGE="mad")
+              BaseAmp=double(1),PACKAGE="gada")
 
        BaseAmp.X <- ifelse(is.na(aux.X$BaseAmp),0,aux.X$BaseAmp)
 
@@ -170,7 +170,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
               SegLen=as.integer(Segments.Y$LenProbe),
               SegAmp=as.double(Segments.Y$MeanAmp),
               K=as.integer(K.Y),
-              BaseAmp=double(1),PACKAGE="mad")
+              BaseAmp=double(1),PACKAGE="gada")
 
        BaseAmp.Y <- ifelse(is.na(aux.Y$BaseAmp),0,aux.Y$BaseAmp)
 
@@ -217,7 +217,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
             K=as.integer(K.autosomes),
             BaseAmp=as.double(BaseAmp.all[1]),
             sigma2=as.double(sigma2),
-            T=as.double(T),PACKAGE="mad")                   
+            T=as.double(T),PACKAGE="gada")                   
 
    Segments.autosomes$State <- aux$SegState
 
@@ -233,7 +233,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
                K=as.integer(K.X),
                BaseAmp=as.double(BaseAmp.all[2]),
                sigma2=as.double(sigma2),
-               T=as.double(T),PACKAGE="mad")                   
+               T=as.double(T),PACKAGE="gada")                   
 
 
       aux.Y<-.C("RcallClassifySegments",
@@ -243,7 +243,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
                K=as.integer(K.Y),
                BaseAmp=as.double(BaseAmp.all[3]),
                sigma2=as.double(sigma2),
-               T=as.double(T),PACKAGE="mad")                   
+               T=as.double(T),PACKAGE="gada")                   
  
       Segments$State <- c(aux$SegState, aux.X$SegState, aux.Y$SegState)
     }
