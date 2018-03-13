@@ -10,8 +10,10 @@ exportSegments2File<-function(x, file, allSegments=FALSE, ...)
   for (i in 1:length(res))
    {
     temp.i<-res[[i]]
-    if (!allSegments)
-     temp<-temp.i[temp.i$State!=0,]
+    if (!allSegments & !is.null(dim(temp.i)))
+      temp<-temp.i[temp.i$State!=0,]
+    else
+      temp <- NULL
     out<-rbind(out, temp)
    }
 
