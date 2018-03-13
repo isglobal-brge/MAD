@@ -1,4 +1,5 @@
-setupParGADA.B.deviation<-function(folder, files, verbose=TRUE, sort=TRUE, ...)
+setupParGADA.B.deviation<-function(folder, files, verbose=TRUE, 
+                                   sort=TRUE, mc.cores=1, ...)
  {
  
   if (!"SBL"%in%dir() )
@@ -97,7 +98,8 @@ setupParGADA.B.deviation<-function(folder, files, verbose=TRUE, sort=TRUE, ...)
     }
 
 
- res<-plapply(1:length(files), function(i) try(prepare.i(i, files=files, ...), TRUE))
+ res<-mclapply(1:length(files), function(i) try(prepare.i(i, files=files, ...), TRUE),
+               mc.cores=mc.cores)
 
  if (verbose)
   {

@@ -88,3 +88,69 @@ The object _example_ contains the following information:
 ```{r show_setup_mad}
 example
 ```
+
+#  Segmentation procedure
+
+Segmentation is performed by using two consecutive algorithms implemented in two separate R-functions within the `gada` package. The first function (`parSBL`) uses sparse Bayesian learning (SBL) to discover the most likely positions and magnitudes for a segment, i.e. the breakpoints. The SBL model is governed by a hierarchical Bayesian prior, which is uninformative with respect to the location and magnitude of the copy number changes but restricts the total number of breakpoints. Sensitivity, given by the maximum breakpoint
+sparseness, is controlled by the hyperparameter `aAlpha`. The second function (`parBE`) is an algorithm that uses a backward elimination (BE) strategy to rank the statistical significance of each breakpoint obtained from `SBL`. We have programmed another function called `parBE.B.deviation` to detect segments that can be considered as an allelic imbalance. The results from `parSBL` and `parBE.B.deviation` are stored in separate files, one for each sample, in a folder called `SBL`. 
+
+Therefore, the segmentation procedure can be performed by executing next two steps:
+  
+```{r parSBL}
+parSBL(example, estim.sigma2=TRUE, aAlpha=0.8)
+```
+
+and
+
+```{r parBdev}
+parBE.B.deviation(example, T=9, MinSegLen=75)
+``` 
+
+As previously mentioned, the parameter `aAlpha` controls the number of breakpoints. We consider that `aAlpha=0.8` is a good choice for Illumina 1M. The parameter `T` controls the False Discovery Rate (FDR). We are currently working on estimating the FDR but the recommended settings of `aAlpha` and `T` depending on the desired level of sensitivity and FDR for a Illumina 650K data are.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{r c c }
+\hline
+(higher sensitivity , higher FDR ) & $<-->$ & ($a_{\alpha}=0.2$,$T>3$)\\
+& $<-->$ & ($a_{\alpha}=0.5$,$T>4$)\\
+(lower sensitivity ,  lower FDR ) & $<-->$ & ($a_{\alpha}=0.8$,$T>5$)\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+Anyway the backward elimination procedure is very fast and the user can change the parameter `T` and obtain different results. The argument `MinSegLen` indicates the number of consecutive probes that have a B-deviation different from 0.
+
+# Obtaining allelic imbalance regions
+
+This function creates a file with the following information:
+  
+```{r export2file}
+exportSegments2File(example, file="example_T_9.txt")
+``` 
+
+The column `State` is a preliminary attempt to classify mosaic alterations after MAD calling process based on log2-ratio segment values (LRR) together with the percentage of normal heterozygous (BAF $\sim$ 0.5) and homozygous probes. The number codes correspond to the following abnormalities: UPD (1), deletion (2), duplication (3), trisomy (4) and LOH (5). It is recommendable to check called segments by making chromosome plots and observing LRR and BAF values to confirm those segments with limit cut-off values.  
+
+
+Other regions are found if one changes the `T` parameter
+
+
+```
+> parBE.B.deviation(example, T=7, MinSegLen=75) 
+```
+
+and then execute
+
+```
+> exportSegments2File(example, file="example_T_7.txt") 
+```
+ 
+Finally, if the user is interested in looking a given region with regard to B-allele frequency and `log2ratio`, the  `plotChr` function can be used to get the figure \ref{fig-control191chr20}
+
+
+```{r control191chr20}
+> plotChr(example, sample="CONTROL191", chr=20)
+```
+
