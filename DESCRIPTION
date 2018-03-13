@@ -4,7 +4,7 @@ Title: Mosaic Alteration Detector(MAD)
 Version: 1.1.0
 Date: 2017-12-16
 Depends: R (>= 3.4.0), gada
-Suggests: plotrix, parallel
+Imports: plotrix, parallel
 Author: Juan R Gonzalez
 Maintainer: Juan R Gonzalez <juanr.gonzalez@isglobal.org>
 Description: The package implements an efficient algorithm to detect mosaic alterations using SNP array data

@@ -1,16 +1,11 @@
 export(
-setupGADA.B.deviation,
-setupParGADA.B.deviation,
-parBE.B.deviation,
-summary.parBdev,
-summary.Bdeviation,
-exportSegments2File,
-plotChr
+  parBE.B.deviation,
+  setupParGADA.B.deviation,
+  setupGADA.B.deviation,
+  plotChr.
+  exportSegments2File
 )
 
-importFrom(utils, data)
-
-S3method(summary,parBdev)
-S3method(summary,Bdeviation)
-
-
+S3method(summary, Bdeviation)
+S3method(summary, parBdev)
+S3method(plot, Bdev)
