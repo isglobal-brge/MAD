@@ -2,7 +2,7 @@ export(
   parBE.B.deviation,
   setupParGADA.B.deviation,
   setupGADA.B.deviation,
-  plotChr.
+  plotChr,
   exportSegments2File
 )
 
