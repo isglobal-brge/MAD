@@ -2,7 +2,7 @@ Package: mad
 Type: Package
 Title: Mosaic Alteration Detector(MAD)
 Version: 1.1.0
-Date: 2017-12-16
+Date: 2018-03-13
 Depends: R (>= 3.4.0), gada
 Imports: plotrix, parallel
 Author: Juan R Gonzalez

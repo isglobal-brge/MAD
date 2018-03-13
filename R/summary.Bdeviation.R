@@ -149,7 +149,7 @@ summary.Bdeviation <-function(object, object2, which="both", T, BaseAmp, LRR.thr
             SegLen=as.integer(Segments.autosomes$LenProbe),
             SegAmp=as.double(Segments.autosomes$MeanAmp),
             K=as.integer(K.autosomes),
-            BaseAmp=double(1),PACKAGE="mad")
+            BaseAmp=double(1),PACKAGE="gada")
 
      BaseAmp <- ifelse(is.na(aux$BaseAmp),0,aux$BaseAmp)
 
