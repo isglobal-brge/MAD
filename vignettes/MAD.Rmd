@@ -1,5 +1,5 @@
 ---
-title: "A fast {\tt R} program to detect allelic imbalances using SNP array data with MAD"
+title: "A fast R program to detect allelic imbalances using SNP array data with MAD"
 subtitle: "Juan R. Gonzalez"
 author: |
   | Institute for Global Health (ISGlobal), Barcelona, Spain
@@ -175,15 +175,33 @@ and then execute
  
 Finally, if the user is interested in looking a given region with regard to B-allele frequency and `log2ratio`, the  `plotChr` function can be used to get the figure \ref{fig-control191chr20}
 
-
 ```{r control191chr20}
-> plotChr(example, sample="CONTROL191", chr=20)
+plotChr(example, sample="CONTROL191", chr=20)
 ```
+
+The plot can include the regions of interest by
+
+```{r plots}
+ans <- read.delim("example_T_9.txt")
+example <- addAnnot(example) # add annotation
+ss <- "CONTROL191"
+plotQMosaic(example, sample=ss, chr=20,
+            regions = ans[ans$sample==ss,])
+```
+
+We can also obtain a zoom plot visualizing the region of interest can also be zoom out
+
+```{r zoom, fig.height=9}
+plotZoomQMosaic(example, sample=ss, chr=20,
+            regions = ans[ans$sample==ss,][2,])
+```
+
 
 
 ```{r remove directories, echo=FALSE}
 unlink("rawData", recursive = TRUE)
 unlink("SBL", recursive = TRUE)
+unlink("example_T_9.txt", recursive = TRUE)
 ```
 
 ```{r sessionInfo}

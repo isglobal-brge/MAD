@@ -1,7 +1,8 @@
 setupGADA.B.deviation <-
-function (file, NumCols, GenoCol, log2ratioCol, BAFcol, name.geno = c("AA", 
-    "AB", "BB"), MarkerIdCol = 1, ChrNameCol = 2, ChrPosCol = 3, 
-    sort = TRUE, orderProbes, sep = "\t", saveGenInfo = TRUE) 
+function (file, NumCols, GenoCol, log2ratioCol, BAFcol, 
+          name.geno = c("AA", "AB", "BB"), MarkerIdCol = 1, 
+          ChrNameCol = 2, ChrPosCol = 3,
+          orderProbes, sep = "\t", saveGenInfo = TRUE) 
 {
     if (missing(GenoCol)) 
         stop("Missing GenoCol. Please, indicate which column of the file contains the genotypes")
@@ -10,7 +11,6 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol, name.geno = c("AA",
     if (missing(NumCols)) 
         stop("Missing NumCols argument. Please, indicate the number of columns in the file")
     ans <- list()
-    xx <- scan(file, skip = 1, what = c("character"), sep = sep)
     headers <- scan(file, nline = 1, what = c("character"), quiet = TRUE, 
         sep = sep)
     if (headers[MarkerIdCol] != "Name") 
@@ -25,8 +25,11 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol, name.geno = c("AA",
         warning("Expecting 'Log R Ratio' as the header of  log2ratioCol in an Illumina file")
     if (NROW(grep("B.Allele.Freq", headers[BAFcol])) != 1) 
         warning("Expecting 'B.Allele.Freq' as the header of  BAFcol in an Illumina file")
-    x <- matrix(xx, ncol = NumCols, nrow = length(xx)/NumCols, 
-        byrow = TRUE)
+
+    x <- fread(file, data.table = FALSE)
+    if (!missing(orderProbes))
+     x <- x[orderProbes,]
+    
     gg <- x[, GenoCol]
     baf <- as.numeric(x[, BAFcol])
     baf[is.na(baf)] <- -999
@@ -35,42 +38,12 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol, name.geno = c("AA",
         as.integer(nProbes), as.double(rep(0, nProbes)), PACKAGE = "mad")
     b.deviation <- outC[[4]]
     b.deviation[b.deviation %in% c(-9, -999, 999, 999.5, -999.5)] <- NA
-    if (!sort) {
-        x[, ChrNameCol][x[, ChrNameCol] == "XY"] <- "X"
-        chr <- factor(x[, ChrNameCol], levels = c(as.character(1:22), 
-            "X", "Y"))
-        temp <- data.frame(probe = x[, MarkerIdCol], chr = chr, 
-            pos = as.numeric(x[, ChrPosCol]), geno=gg, stringsAsFactors = FALSE)
-        mito <- is.na(temp$chr)
-        temp2 <- temp[(!mito), ]
-        ans$log.ratio <- as.numeric(x[!mito, log2ratioCol])
-        ans$B.allele.freq <- as.numeric(x[!mito, BAFcol])
-        Bdev <- b.deviation[(!mito)]
-        geno <- x[!mito, GenoCol] 
-        attr(ans, "gen.info") <- temp2
-    }
-    else {
-        x[, ChrNameCol][x[, ChrNameCol] == "XY"] <- "X"
-        chr <- factor(x[, ChrNameCol], levels = c(as.character(1:22), 
-            "X", "Y"))
-        pos <- as.numeric(x[, ChrPosCol])
-        if (missing(orderProbes)) 
-            o <- order(chr, pos)
-        else o <- orderProbes
-        temp <- data.frame(probe = x[o, MarkerIdCol], chr = chr[o], 
-            pos = pos[o], geno=gg[o], stringsAsFactors = FALSE)
-        mito <- is.na(temp$chr)
-        temp2 <- temp[(!mito), ]
-        aux <- as.numeric(x[o, log2ratioCol])
-        ans$log.ratio <- aux[!mito]
-        aux2 <- as.numeric(x[o, BAFcol])
-        ans$B.allele.freq <- aux2[!mito]
-        b.deviation.sorted <- b.deviation[o]
-        Bdev <- b.deviation.sorted[(!mito)]
-        aux3 <- x[o, GenoCol]
-        geno <- aux3[!mito]
-        attr(ans, "gen.info") <- temp2
-    }
+    
+    ans$log.ratio <- as.numeric(x[, log2ratioCol])
+    ans$B.allele.freq <- as.numeric(x[, BAFcol])
+    Bdev <- b.deviation
+    geno <- x[, GenoCol] 
+    
     temp <- Bdev
   
     na.find <- is.na(temp)
@@ -95,7 +68,7 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol, name.geno = c("AA",
     Bdev[temp == 0] <- 0
     Bdev[is.na(Bdev)] <- 0
 
-    mask <- chr%in%c("X", "Y") & geno!="AB"
+    mask <- x[,ChrNameCol]%in%c("X", "Y") & geno!="AB"
     Bdev[mask] <- NA
     
 

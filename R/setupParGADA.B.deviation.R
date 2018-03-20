@@ -1,5 +1,8 @@
-setupParGADA.B.deviation<-function(folder, files, verbose=TRUE, 
-                                   sort=TRUE, mc.cores=1, ...)
+setupParGADA.B.deviation <- 
+  function(folder, files, verbose=TRUE,
+           sort=TRUE, MarkerIdCol = 1, 
+           ChrNameCol = 2, ChrPosCol = 3,
+           mc.cores=1, ...)
  {
  
   if (!"SBL"%in%dir() )
@@ -16,51 +19,54 @@ setupParGADA.B.deviation<-function(folder, files, verbose=TRUE,
   if (missing(files))
     files <- dir("rawData")
 
-  splitData<-system.file("exec/splitData.pl",package="gada")
-
   if (verbose)
    {
     cat("\n")
     cat("Creating object with annotation data ... \n")
    }
 
-  pp<-paste("perl ",splitData, paste("rawData/", files[1], sep=""),"-start_split 1 -end_split 1 split 3 -tab -out SBL/gen.info ")
-  system(pp)
-
-  file.rename("SBL/gen.info.n1","SBL/genomicInfo")
-
+  gen.info <- fread(file.path("rawData", files[1]), 
+                       select=c(MarkerIdCol, 
+                                ChrNameCol, 
+                                ChrPosCol),
+                       data.table = FALSE)
+  colnames(gen.info) <- c("marker", "chr", "position")
+  
 
   if (sort)
    {
-    gg<-scan("SBL/genomicInfo",skip=1,what="character")
-    gg2<-matrix(gg,ncol=3,nrow=length(gg)/3,byrow=TRUE)
-    gg2[,2][gg2[,2]=="XY"]<-"X"
-    temp<-data.frame(probe=gg2[,1], chr=factor(gg2[,2],levels=c(1:22,"X","Y")), pos=as.numeric(gg2[,3]),stringsAsFactors=FALSE) 
-
+    
 # mitocondrial?
-    mito<-is.na(temp$chr) 
-    gen.info<-temp[!mito,]
+    mito <- is.na(gen.info$chr) 
+    gen.info <- gen.info[!mito,]
 
-    attr(gen.info,"sort")<-TRUE
-    o<-order(gen.info$chr,gen.info$pos)
+    gen.info$chr[gen.info$chr=="XY"] <- "X"
+    
+    gen.info <- gen.info[gen.info$chr%in%
+                           c(as.character(1:22), "X", "Y"),]
+    
+    o<-order(gen.info$chr, gen.info$position)
     gen.info<-gen.info[o,]
-    attr(gen.info,"orderProbe")<-o
+    attr(gen.info,"sort") <- TRUE
+    attr(gen.info,"orderProbe") <- o
+    select <- rownames(gen.info)
    }
 
   else
    {
-    gg<-scan("SBL/genomicInfo",skip=1,what="character")
-    gg2<-matrix(gg,ncol=3,nrow=length(gg)/3,byrow=TRUE)
-    gg2[,2][gg2[,2]=="XY"]<-"X"
-    temp<-data.frame(probe=gg2[,1], chr=factor(gg2[,2],levels=c(1:22,"X","Y")), pos=as.numeric(gg2[,3]),stringsAsFactors=FALSE) 
-
-# mitocondrial?
-    mito<-is.na(temp$chr) 
-    gen.info<-temp[!mito,]
-    attr(gen.info,"sort")<-FALSE
+    mito <- is.na(gen.info$chr) 
+    gen.info <- gen.info[!mito,]
+    gen.info$chr[gen.info$chr=="XY"] <- "X"
+    
+    gen.info <- gen.info[gen.info$chr%in%
+                           c(as.character(1:22), "X", "Y"),]
+    
+    attr(gen.info,"sort") <- FALSE
+    attr(gen.info,"orderProbe") <- 1:nrow(gen.info)
+    select <- rownames(gen.info)
    } 
   
-  save(gen.info,file="SBL/gen.info.Rdata",compress=TRUE)
+  save(gen.info, file="SBL/gen.info.Rdata", compress=TRUE)
    
 
   if (verbose)
@@ -83,12 +89,15 @@ setupParGADA.B.deviation<-function(folder, files, verbose=TRUE,
 
 
 
-  prepare.i<-function(i, files, ...)
+  prepare.i<-function(i, files, MarkerIdCol = MarkerIdCol,
+                      chrNameCol = chrNameCol, 
+                      ChrPosCol = ChrPosCol,
+                      ...)
     {
       if (verbose)
        cat("  Importing array: ",files[i],"... ")  
 
-      dd<-paste("rawData/",files[i],sep="")
+      dd<-paste("rawData/", files[i], sep="")
       temp<-setupGADA.B.deviation(dd, saveGenInfo=FALSE, ...)
 
       save(temp, file=paste("SBL/setupGADA",i,sep="" ), compress=TRUE)
@@ -98,7 +107,9 @@ setupParGADA.B.deviation<-function(folder, files, verbose=TRUE,
     }
 
 
- res<-mclapply(1:length(files), function(i) try(prepare.i(i, files=files, ...), TRUE),
+ res<-mclapply(1:length(files), 
+               function(i) try(prepare.i(i, files=files, 
+                                         orderProbes=select, ...), TRUE),
                mc.cores=mc.cores)
 
  if (verbose)
