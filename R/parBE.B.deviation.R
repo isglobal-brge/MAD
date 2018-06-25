@@ -1,15 +1,13 @@
 parBE.B.deviation<-function(x, Samples, T, MinSegLen,
                             verbose=TRUE, mc.cores=1, ...) {
 
-  setwd(x)
- 
   if (missing(Samples))
    Samples<-attr(x,"Samples") 
 
   if (verbose)
     cat("Retrieving annotation data ...")
 
-  load("SBL/gen.info.Rdata")
+  load(file.path(x, "SBL/gen.info.Rdata"))
 
   if (verbose)
     cat("done \n")
@@ -24,18 +22,20 @@ parBE.B.deviation<-function(x, Samples, T, MinSegLen,
     {
       if (verbose)
        cat("   Array #",i,"... ")  
-      load(paste("SBL/sbl",i,sep="" ) )
+      load(file.path(x, paste0("SBL/sbl",i)))
       attr(step1,"gen.info")<-gen.info
       step2<-BackwardElimination(step1, T=T, MinSegLen=MinSegLen)
-      load(paste("SBL/setupGADA",i,sep="" ))
+      load(file.path(x, paste0("SBL/setupGADA",i)))
       ans<-summary.Bdeviation(step2, temp, print=FALSE, ...)
-      save(ans,step2,file=paste("SBL/segments",i,sep=""),compress=TRUE)
+      save(ans, step2, file=file.path(x, paste0("SBL/segments",i)),
+           compress=TRUE)
       ans$sample<-labels[i]
       ans     
     }
 
    if (verbose)
-     cat("Backward elimination procedure for",Samples[2]-Samples[1]+1,"samples ... \n")
+     cat("Backward elimination procedure for",
+         Samples[2]-Samples[1]+1, "samples ... \n")
 
    res <- mclapply(Samples[1]:Samples[2], 
                                  analize.i, T=T, 
@@ -46,7 +46,8 @@ parBE.B.deviation<-function(x, Samples, T, MinSegLen,
                                  mc.cores = mc.cores)
 
    if (verbose)
-     cat("Backward elimination procedure for",Samples[2]-Samples[1]+1,"samples ...done \n")
+     cat("Backward elimination procedure for",
+         Samples[2]-Samples[1]+1, "samples ...done \n")
 
    error<-sum(unlist(lapply(res, function(x) inherits(x, "try-error"))))
 
@@ -58,6 +59,6 @@ parBE.B.deviation<-function(x, Samples, T, MinSegLen,
       error <<- res
     }
 
-  save(res,file="SBL/allSegments",compress=TRUE)
+  save(res, file=file.path(x, paste0("SBL/allSegments")),compress=TRUE)
  }
 

@@ -13,11 +13,12 @@ plotZoomQMosaic <- function (x, chr, sample, regions, delim, ...)  {
   ##NOT DETAILED
   plotQMosaic(x, chr, sample, regions, ...)
   ##DETAILED
-  region.sel <- regions[regions$chr == chr & regions$sample == sample, ]
-  start <- region.sel$IniProbe
+  region.sel <- subset(regions, seqnames == paste0("chr", chr)
+                       & sample == sample)
+  start <- start(region.sel)
   start <- min(start)
   if (start - 2000000 < 0 ) start <- 0
-  end <- region.sel$EndProbe
+  end <- end(region.sel)
   end <- max(end)
   old.mar <- par("mar")
   plotQMosaic(x, chr, sample, regions, 

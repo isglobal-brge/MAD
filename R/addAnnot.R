@@ -4,8 +4,7 @@
 #' @return the same object with an extra attribute called 'gen.info' including the annotation
 
 addAnnot <- function(x){
-  setwd(x)
-  load("SBL/gen.info.Rdata")
+  load(file.path(x, "SBL/gen.info.Rdata"))
   attr(x, "gen.info") <- gen.info
   return(x)
 }

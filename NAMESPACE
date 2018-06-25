@@ -2,15 +2,12 @@ export(
   parBE.B.deviation,
   setupParGADA.B.deviation,
   setupGADA.B.deviation,
-  plotChr,
-  exportSegments2File,
   addAnnot,
   plotQMosaic,
-  plotZoomQMosaic
+  plotZoomQMosaic,
+  getMosaics
 )
 
 S3method(summary, Bdeviation)
-S3method(summary, parBdev)
-S3method(plot, Bdev)
 
 importFrom("parallel", "mclapply")
