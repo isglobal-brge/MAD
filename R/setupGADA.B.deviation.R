@@ -1,7 +1,21 @@
+#' Imports array data to MAD
+#' @param file A pennCNV-style file 
+#' @param NumCols The number of columns in 'file'
+#' @param GenoCol The column in 'file' containing genotypes
+#' @param log2ratioCol The column in 'file' containing log2ratio intensities
+#' @param BAFCol The column in 'file' containing B-allele frequency (BAF)
+#' @param name.geno the name of the genotypes (default "AA", "AB" and "BB)
+#' @param MarkerIdCol The column in 'file' containing the name of the marker. Default first column
+#' @param ChrNameCol The column in 'file' containing the chromosome. Default second column
+#' @param ChrPosCol The column in 'file' containing the genomic position. Default third column
+#' @param orderProbes used when sort is TRUE. See details
+#' @param sep how data columns are separated. Default by tab
+#' @param saveGenInfo Should annotation data be saved? The default is TRUE. See details
+
 setupGADA.B.deviation <-
 function (file, NumCols, GenoCol, log2ratioCol, BAFcol, 
           name.geno = c("AA", "AB", "BB"), MarkerIdCol = 1, 
-          ChrNameCol = 2, ChrPosCol = 3,
+          ChrNameCol = 2, ChrPosCol = 3, 
           orderProbes, sep = "\t", saveGenInfo = TRUE) 
 {
     if (missing(GenoCol)) 
@@ -11,21 +25,7 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol,
     if (missing(NumCols)) 
         stop("Missing NumCols argument. Please, indicate the number of columns in the file")
     ans <- list()
-    headers <- scan(file, nline = 1, what = c("character"), quiet = TRUE, 
-        sep = sep)
-    if (headers[MarkerIdCol] != "Name") 
-        warning("Expecting 'Name' as the header of MarkerIdCol in an Illumina file")
-    if (headers[ChrNameCol] != "Chr") 
-        warning("Expecting 'Chr' as the header of ChrNameCol in an Illumina file")
-    if (!headers[ChrPosCol] %in% c("position", "Position")) 
-        warning("Expecting 'position' as the header of ChrPosCol in an Illumina file")
-    if (NROW(grep("GType", headers[GenoCol])) != 1) 
-        warning("Expecting 'GType' as the header of  GenoCol in an Illumina file")
-    if (NROW(grep("Log.R.Ratio", headers[log2ratioCol])) != 1) 
-        warning("Expecting 'Log R Ratio' as the header of  log2ratioCol in an Illumina file")
-    if (NROW(grep("B.Allele.Freq", headers[BAFcol])) != 1) 
-        warning("Expecting 'B.Allele.Freq' as the header of  BAFcol in an Illumina file")
-
+    
     x <- fread(file, data.table = FALSE)
     if (!missing(orderProbes))
      x <- x[orderProbes,]

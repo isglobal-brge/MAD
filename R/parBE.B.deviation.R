@@ -1,3 +1,14 @@
+#' Parallel backward elimination of B-deviation
+#' 
+#' @param x an object of class 'parGADA' obtained using 'setupParGADA.B.deviation' function
+#' @param Samples the samples to be analyzed (obtained from 'x' by default)
+#' @param T critical value of the backward elimination algorithm (see 'BackwardElimination' function)
+#' @param MinSegLen minimum number of probes each segment must contain (see 'BackwardElimination' function)
+#' @param verbose is information about each individual showed in the console? Default is TRUE
+#' @param mc.cores number of cores to be used when using multiple cores (see argument 'mc.cores' from 'mclapply' function of parallel library) 
+#' @param ... other arguments passed through the function 'BackwardElimination'
+#' @return a 'GenomicRange' object having mosaic alterations
+
 parBE.B.deviation<-function(x, Samples, T, MinSegLen,
                             verbose=TRUE, mc.cores=1, ...) {
 

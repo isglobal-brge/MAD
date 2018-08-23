@@ -1,3 +1,5 @@
+useDynLib(mad, .registration = TRUE)
+
 export(
   parBE.B.deviation,
   setupParGADA.B.deviation,

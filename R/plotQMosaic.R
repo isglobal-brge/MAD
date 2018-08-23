@@ -6,7 +6,7 @@
 #' @param regions regions to be highlighted
 #' @param delim same as xlim. Default is NULL
 #' @param title should title be added? Default is TRUE
-#' @return a plot
+#' @return a plot highlighting the altered regions
 
 
 
@@ -14,11 +14,11 @@ plotQMosaic <- function (x, chr, sample, regions, delim=NULL, title=TRUE,
                          col.dots = c("black", "red"), ...)  {
   if (missing(chr)) 
     stop("Please, select a chromosome")
-  n <- attr( x, "Samples")
-  lab <- attr( x, "labels.samples")
-  i <- c( 1:n)[ lab == sample]
+  n <- attr( x, "Samples" )
+  lab <- attr( x, "labels.samples" )
+  i <- c(1:n)[lab == sample]
   load(file.path(x, paste0("SBL/setupGADA", i)))
-  gen.info <- attr( x, "gen.info")
+  load(file.path(x, paste0("SBL/gen.info.Rdata")))
   o <- gen.info$chr == chr
   pos <- gen.info$pos[o]
   if (!missing(regions))
@@ -30,22 +30,12 @@ plotQMosaic <- function (x, chr, sample, regions, delim=NULL, title=TRUE,
   axis( 2, at = c(-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2), 
         labels = c("-2.0", -1.5, "-1.0", -0.5, "0.0", 0.5, "1.0", 1.5, "2.0"), 
         las = 1, col = col.dots[1])
-  colBAF <- rep( 2, length(temp$geno[o]))
-  colBAF[ temp$geno[o] == "AA" ] <- 2
-  colBAF[ temp$geno[o] == "BB" ] <- 2
-  if (!missing(regions)) {
-    start <- start(region.sel)
-    end <- end(region.sel)
-    abline(v=c(start, end), lwd=1)
-    for (i in 1:length(region.sel)){
-      colBAF[ temp$geno[o] == "AB" & pos > start[i] & pos < end[i] ] <- 2
-    }
-  }
+  
   par(new = TRUE)
   plot(pos, temp$B.allele.freq[o], col = col.dots[2], pch = ".", 
        cex = 2, ylab = "", xlab = "", main = "", axes = F, ...)
   abline(h=0.5, col=8)
-  abline(h=c(0.33, 0.66), col=8)
+  abline(h=c(0.33, 0.66), col="gray70", lwd=1)
   
   mtext("LRR", side = 2, col = col.dots[1], line = 2.5, adj = 0.5)
   mtext("BAF", side = 4, col = col.dots[2], line = 2.5, adj = 0.5)
@@ -56,6 +46,13 @@ plotQMosaic <- function (x, chr, sample, regions, delim=NULL, title=TRUE,
   if (!is.null(delim)) xaxis <- seq(delim[1], delim[2], length.out=5)
   axis( 1, at = xaxis, labels = as.character(round(xaxis/1000000, 1)), las = 1)
   mtext("position (Mb)", side = 1, line = 2)
+  
+  if (!missing(regions)) {
+    start <- GenomicRanges::start(region.sel)
+    end <- GenomicRanges::end(region.sel)
+    abline(v=c(start, end), lwd=2, col="gray70")
+  }
+  
   if (title){
     title(sample)
     title(paste("Chromosome", chr), line = 0.3)

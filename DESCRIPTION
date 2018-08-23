@@ -1,14 +1,15 @@
 Package: mad
 Type: Package
 Title: Mosaic Alteration Detector(MAD)
-Version: 1.1.1
-Date: 2018-03-20
+Version: 1.1.2
+Date: 2018-08-23
 Depends: R (>= 3.4.0), gada
-Imports: plotrix, parallel
+Imports: parallel
 Author: Juan R Gonzalez
 Maintainer: Juan R Gonzalez <juanr.gonzalez@isglobal.org>
 Description: The package implements an efficient algorithm to detect mosaic alterations using SNP array data
 License: MIT
 URL: http://brge.isglobal.org
 VignetteBuilder: knitr
+Suggests: BiocStyle, knitr
 RoxygenNote: 6.0.1

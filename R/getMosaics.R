@@ -1,3 +1,8 @@
+#' Get mosaic alterations as a GenomicRange object
+#' 
+#' @param x an object from 'parBE.B.deviation' function
+#' @return a 'GenomicRange' object having mosaic alterations
+
 getMosaics <- function(x, ...){
   
   load(file.path(x, "SBL/allSegments"))

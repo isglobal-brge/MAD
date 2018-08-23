@@ -1,14 +1,14 @@
 ---
 title: "A fast R program to detect allelic imbalances using SNP array data with MAD"
 subtitle: "Juan R. Gonzalez"
-author: |
-  | Institute for Global Health (ISGlobal), Barcelona, Spain
-  | Bioinformatics Research Group in Epidemiolgy (BRGE)
-  | (<http://brge.isglobal.org>)
+author: 
+   Institute for Global Health (ISGlobal), Barcelona, Spain
+   Bioinformatics Research Group in Epidemiolgy (BRGE)
+   http://brge.isglobal.org
 date: "`r Sys.Date()`"
 package: "`r pkg_ver('mad')`"
 output: 
-  BiocStyle::pdf_document:
+  BiocStyle::html_document:
     number_sections: true
     toc: yes
     fig_caption: yes
@@ -24,12 +24,12 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 
 # Introduction
-MAD (mosaic alteration detector) is a fast algorithm to detect allelic imbalances using SNP array data (B-allele frequency (BAF) and log R ratio (LRR). The method detects different types of mosaic alterations (UPDs, deletions, duplications and trisomies) by searching for segments were B-deviation is different from 0. Segmentation procedure is carried out using an _R_ implementation of GADA algorithm (Pique-Regi R, Caceres A, Gonzalez JR. BMC Bioinformatics, 2010). R-GADA is available at \url{https://github.com/isglobal-brge/R-GADA}. 
+MAD (mosaic alteration detector) is a fast algorithm to detect allelic imbalances using SNP array data (B-allele frequency (BAF) and log R ratio (LRR). The method detects different types of mosaic alterations (UPDs, deletions, duplications and trisomies) by searching for segments were B-deviation is different from 0. Segmentation procedure is carried out using an _R_ implementation of GADA algorithm (Pique-Regi R, Caceres A, Gonzalez JR. BMC Bioinformatics, 2010). R-GADA is available at [https://github.com/isglobal-brge/R-GADA](https://github.com/isglobal-brge/R-GADA). 
 
-Herein, we briefly describe how to use the main functions by using a real data set of 5 samples ( _CASE369.txt_,  _CASE371.txt_,  _CASE377.txt_,  _CONTROL152.txt_,  _CONTROL191.txt_) that can be downloaded from \url{http://www.creal.cat/media/upload/arxius/jr/GADA/MAD.zip}.
+Herein, we briefly describe how to use the main functions by using a real data set of 5 samples: _CASE369.txt_,  _CASE371.txt_,  _CASE377.txt_,  _CONTROL152.txt_,  _CONTROL191.txt_. These files can be loaded into _R_ from our package called `brgedata` which is also available at our GitHub repository [https://github.com/isglobal-brge/brgedata](https://github.com/isglobal-brge/brgedata). 
 
 
-# Getting Started}
+# Getting Started
 The package depends on R-GADA package that can be installed from our GitHub repository:
 
 ```{r install_gada, eval=FALSE}
@@ -43,38 +43,38 @@ devtools::install_github("isglobal-brge/MAD")
 ```
 
 
-Data is loaded as usually
+The package is loaded as usually
 
 ```{r load_mad}
 library(mad)
 ``` 
 
 # Required data format
-The package enforces a strict directory structure on the working directory to perform the analysis of multiple samples. Nonetheless, the only required directory to be set up by the user is that containing the raw data. This is an example of how data are organized before the analysis is completed
+Detection of mosaic alterations enforces a strict directory structure on the working directory to perform the analysis of multiple samples. Nonetheless, the only required directory to be set up by the user is that containing the raw data. This is an example of how data are organized before the analysis is completed
 
-|-- rawData
-|   |-- CASE369.txt 
-|   |-- CASE371.txt
-|   |-- CASE377.txt
-|   |-- CONTROL152.txt
-|   |-- CONTROL191.txt
+- rawData
+    - CASE369.txt 
+    - CASE371.txt
+    - CASE377.txt
+    - CONTROL152.txt
+    - CONTROL191.txt
 
 
-Notice that _rawData_ directory contains all data files corresponding to each individual from a particular assay. Each text file must be prepared in pennCNV format \url{http://http://penncnv.openbioinformatics.org}. This can be performed by using the BeadStudio tool when analyzing Illumina data (see \url{http://www.illumina.com/}), or other Bioconductor packages if Affymetrix SNP data is analyzed ( _crlmm_, _affy2sv_, ...). This is the structure of a given  example: 
+Notice that _rawData_ directory contains all data files corresponding to each individual from a particular assay. Each text file must be prepared in pennCNV format [http://http://penncnv.openbioinformatics.org](http://http://penncnv.openbioinformatics.org). This can be performed by using the BeadStudio tool when analyzing Illumina data (see [http://www.illumina.com/](http://www.illumina.com/), or other Bioconductor packages if Affymetrix SNP data is analyzed: _crlmm_, _affy2sv_, ...). This is the structure of a given  example: 
 
   
 ```
-Name        Chr Position  Log.R.Ratio B.Allele.Freq   GType
-rs758676	  7	  12878632	0.1401	    0.4977	        AB
-rs3916934	  13	103143536	0.3934	    0.4610	        AA
-rs2711935	  4	  38838852	-0.1091	    0.0026	        AA
-rs17126880	1	  64922104	0.0478	    0.9910	        AA
-rs12831433	12	4995220	  -0.1661	    0.0000	        AA
+Name       Chr Position   Log.R.Ratio B.Allele.Freq GType
+rs758676   7   12878632	  0.1401      0.4977        AB
+rs3916934  13  103143536  0.3934      0.4610        AA
+rs2711935  4   38838852	 -0.1091      0.0026        AA
+rs17126880 1   64922104	  0.0478      0.9910        AA
+rs12831433 12  4995220	 -0.1661      0.0000        AA
 ```
 
 \textcolor{red} {It is important to mention} that all files included in the folder _rawData_ must belong to the same type of array (e.g. same number of probes) because the annotation data is obtained from one of these files. If samples have been analyzed using different platforms, the best option is to create another working directory containing another _rawData_ folder. 
 
-# Importing a collection of array data in pennCNV format
+# Importing array data
 
 Let us prepare a `rawData` folder containing 5 files in the required format. PennCNV files are available in our package called `brgedata` that can be installed by executing:
 
@@ -100,14 +100,14 @@ dir("rawData")
 ``` 
 
 
-Therefore, we are ready to start the analyses. First, data can be prepared for the analysis by:
+we are ready to start the analyses. First, data can be prepared for the analysis by:
  
 ```{r setup_mad}
 example <- setupParGADA.B.deviation(NumCols=6, GenoCol=6, 
                                     BAFcol=5, log2ratioCol=4)
 ``` 
 
-At it can be seen, the order of the columns in the pennCNV files is only mandatory for the three fist columns. The Genotypes, BAF and LRR can be changed by using _GenoCol_, _BAFcol_ and _log2ratioCol_. The function also contains an argument called _folder_ that allow the user to indicate where the _rawData_ is located
+By default, the function considers that the first column of pennCNV-style files correspond to the marker id (e.g SNP name). The second columd stands for the chromosome name and the third one corresponds to the genomic position. These can be changed by the arguments _MarkerIdCol_, _ChrNameCol_ and _ChrPosCol_, respectively.  Information about the number of columns of each file (argument _NumCols_) as well as the column containing Genotypes, BAF and LRR are mandatory and should be passed through the arguments _GenoCol_, _BAFcol_ and _log2ratioCol_, respectively. The function also contains an argument called _folder_ that allow the user to indicate where the _rawData_ is located if the working directory does not contains the required `rawData` folder. 
 
 The object _example_ contains the following information:
 
@@ -117,7 +117,7 @@ example
 
 #  Segmentation procedure
 
-Segmentation is performed by using two consecutive algorithms implemented in two separate R-functions within the `gada` package. The first function (`parSBL`) uses sparse Bayesian learning (SBL) to discover the most likely positions and magnitudes for a segment, i.e. the breakpoints. The SBL model is governed by a hierarchical Bayesian prior, which is uninformative with respect to the location and magnitude of the copy number changes but restricts the total number of breakpoints. Sensitivity, given by the maximum breakpoint
+Segmentation is performed by using two consecutive algorithms implemented in two separate R-functions whithin the `gada` package. The first function (`parSBL`) uses sparse Bayesian learning (SBL) to discover the most likely positions and magnitudes for a segment, i.e. the breakpoints. The SBL model is governed by a hierarchical Bayesian prior, which is uninformative with respect to the location and magnitude of the copy number changes but restricts the total number of breakpoints. Sensitivity, given by the maximum breakpoint
 sparseness, is controlled by the hyperparameter `aAlpha`. The second function (`parBE`) is an algorithm that uses a backward elimination (BE) strategy to rank the statistical significance of each breakpoint obtained from `SBL`. We have programmed another function called `parBE.B.deviation` to detect segments that can be considered as an allelic imbalance. The results from `parSBL` and `parBE.B.deviation` are stored in separate files, one for each sample, in a folder called `SBL`. 
 
 Therefore, the segmentation procedure can be performed by executing two steps:
@@ -129,7 +129,7 @@ parSBL(example, estim.sigma2=TRUE, aAlpha=0.8)
 and
 
 ```{r parBdev}
-parBE.B.deviation(example, T=9, MinSegLen=75)
+parBE.B.deviation(example, T=9, MinSegLen=100)
 ``` 
 
 As previously mentioned, the parameter `aAlpha` controls the number of breakpoints. We consider that `aAlpha=0.8` is a good choice for Illumina 1M. The parameter `T` controls the False Discovery Rate (FDR). We are currently working on estimating the FDR but the recommended settings of `aAlpha` and `T` depending on the desired level of sensitivity and FDR for a Illumina 650K data are.
@@ -151,58 +151,69 @@ Anyway the backward elimination procedure is very fast and the user can change t
 
 # Obtaining allelic imbalance regions
 
-This function creates an object with the altered regions:
+The function `getMosaics` creates a `GenomicRanges` object which includes the altered regions:
   
 ```{r getmosaics}
 mosaics <- getMosaics(example)
+mosaics
 ``` 
 
-The column `State` is a preliminary attempt to classify mosaic alterations after MAD calling process based on log2-ratio segment values (LRR) together with the percentage of normal heterozygous (BAF $\sim$ 0.5) and homozygous probes. The number codes correspond to the following abnormalities: UPD (1), deletion (2), duplication (3), trisomy (4) and LOH (5). It is recommendable to check called segments by making chromosome plots and observing LRR and BAF values to confirm those segments with limit cut-off values.  
+The column `State` is a preliminary attempt to classify mosaic alterations after MAD calling process based on log2-ratio segment values (LRR) together with the percentage of normal heterozygous (BAF $\sim$ 0.5) and homozygous probes. The number codes correspond to the following abnormalities: UPD (1), deletion (2), duplication (3), trisomy (4) and LOH (5). It is recommendable to check called segments by making chromosome plots and observing LRR and BAF values to confirm those segments with limit cut-off values. The column `Bdev` stands for B-deviation that can be used to estimate cellularity. Our experience by analyzing several real datasets is that the method is highly sensible to detect alterations having B-deviations larger than 0.05.
 
-
-Other regions are found if one changes the `T` parameter
+For those users who are not familiar with `GenomicRanges` the resulting information can be obtained as a `data.frame` and exported into a text file by simply writting:
 
 ```
-> parBE.B.deviation(example, T=7, MinSegLen=75) 
+altered <- as(mosaics, "data.frame")
+head(altered)
+write.table(altered, file="file.txt", quote=FALSE, sep="\t",
+            row.names=FALSE)
 ```
 
-and then execute
+The user can change `T` parameter to get more candidate regions. It should be consider that lower values of `T` argument will increase false positive results. We start by executing
+
+```
+parBE.B.deviation(example, T=7, MinSegLen=75) 
+```
+
+and then the new altered regions can be obtained by:
 
 ```
 mosaics2 <- getMosaics(example) 
 ```
+# Data visualization
  
-Finally, if the user is interested in looking at a given region with regard to B-allele frequency and `log2ratio`, the  `plotQMosaic` function can be used to get the figure \ref{fig-control191chr20}
+The user can visually inspect the BAF and LRR of given region to verify wheather it is a real mosaic alteration. The function `plotQMosaic` can be used to this end: 
 
-```{r control191chr20}
+```{r plotControl191}
 example <- addAnnot(example) # add annotation
-ss <- "CONTROL191"
-plotQMosaic(example, sample=ss, chr=20, 
+plotQMosaic(example, sample="CONTROL191", chr=20, 
             regions=mosaics)
 ```
 
-We can also zoom out the region of interest by:
+We can also zoom out the region of interest. For instance, let us better visualize the second alteration of CONTROL191 individual that can be accessed by
 
-```{r zoom, fig.height=9}
-example <- addAnnot(example)
-plotZoomQMosaic(example, sample=ss, chr=20,
-            regions = mosaics)
+```{r roi}
+mosaics[42]
 ```
 
-We can also visualize the genomic region using `plotCNV` function from `R-GADA` package indicating `mosaic=TRUE`. The function requires annotation from `Homo.sapiens` and the `Gviz` library. Mosaic gains are in green and loses in blue, UPD are in orange, trisomies in tomato and LOH in red
+```{r zoomPlotControl191, fig.height=10}
+plotZoomQMosaic(example, sample="CONTROL191", chr=20,
+            regions = mosaics[42])
+```
 
-```{r plotGR}
+We can also visualize all the individuals having an alteration in a given genomic region (passed as a `GenomicRange` that can be easily created using `GRanges` function) using `plotCNV` function from `R-GADA` package indicating `mosaic=TRUE`. The function requires annotation from `Homo.sapiens` and the `Gviz` library. Genes can be annotated by setting `drawGenes = TRUE` By default, it depicts mosaic gains are in green and loses in blue, UPD are in orange, trisomies in tomato and LOH in red.
+
+```{r plotGR, fig.width=6}
 library(Gviz)
 library(Homo.sapiens)
 rr <- GRanges("chr16:63.5e6-67.0e6")
-plotCNVs(mosaics, range=rr, drawGenes = TRUE, mosaic=TRUE)
+plotCNVs(mosaics, range=rr, mosaic=TRUE, drawGenes = TRUE)
 ```
 
 
 ```{r remove directories, echo=FALSE}
 unlink("rawData", recursive = TRUE)
 unlink("SBL", recursive = TRUE)
-unlink("example_T_9.txt", recursive = TRUE)
 ```
 
 ```{r sessionInfo}

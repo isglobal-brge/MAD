@@ -1,3 +1,14 @@
+#' A parallel version of setupGADA.B.deviation function
+#' @param folder The folder where data is stored. Not required if the working directory contains a 'rawData' folder
+#' @param files The names of the files with pennCNV-format fiels. Not required. By default all files in the 'rawData' folder are analyzed
+#' @param verbose Should information about process be printed in the console? The default is TRUE
+#' @param sort Should data be sorted by genomic position? Default is TRUE
+#' @param MarkerIdCol The column in 'file' containing the name of the marker. Default first column
+#' @param ChrNameCol The column in 'file' containing the chromosome. Default second column
+#' @param ChrPosCol The column in 'file' containing the genomic position. Default third column
+#' @param mc.cores number of cores to be used when using multiple cores (see argument 'mc.cores' from 'mclapply' function of parallel library) 
+#' @param ... Other arguments passed through 'setupGADAIllumina'
+
 setupParGADA.B.deviation <- 
   function(folder, files, verbose=TRUE,
            sort=TRUE, MarkerIdCol = 1, 
@@ -107,7 +118,7 @@ setupParGADA.B.deviation <-
     }
 
 
- res<-mclapply(1:length(files), 
+ res <- mclapply(1:length(files), 
                function(i) try(prepare.i(i, files=files, 
                                          orderProbes=select, ...), TRUE),
                mc.cores=mc.cores)

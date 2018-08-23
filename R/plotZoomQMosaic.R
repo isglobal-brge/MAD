@@ -5,7 +5,7 @@
 #' @param sample sample of interest
 #' @param regions regions to be highlighted
 #' @param delim same as xlim. Default is NULL
-#' @return a pannel includin two plots
+#' @return a pannel including two plots
 
 
 plotZoomQMosaic <- function (x, chr, sample, regions, delim, ...)  {
@@ -15,12 +15,12 @@ plotZoomQMosaic <- function (x, chr, sample, regions, delim, ...)  {
   ##DETAILED
   region.sel <- subset(regions, seqnames == paste0("chr", chr)
                        & sample == sample)
-  start <- start(region.sel)
+  start <- GenomicRanges::start(region.sel)
   start <- min(start)
   if (start - 2000000 < 0 ) start <- 0
-  end <- end(region.sel)
+  end <- GenomicRanges::end(region.sel)
   end <- max(end)
-  old.mar <- par("mar")
+  
   plotQMosaic(x, chr, sample, regions, 
               delim=c(start-2000000, end+2000000), 
               xlim=c(start-2000000, end+2000000),
