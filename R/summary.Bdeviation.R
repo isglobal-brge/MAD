@@ -1,4 +1,6 @@
-summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp, LRR.threshold=c(-0.09, 0.09), Het.threshold=5,  Hom.threshold=85, print=TRUE, ...)
+summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp, 
+                                LRR.threshold=c(-0.09, 0.09), Het.threshold=5,  
+                                Hom.threshold=85, print=TRUE, ...)
 {
   
   if(!inherits(object, "BackwardElimination"))
@@ -68,7 +70,17 @@ summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp, LRR.t
     #    k <- c(1:22)
     
     # All Chromosomes
-    k  <-  c(1:24) 
+    # k  <-  c(1:24) 
+    
+    # Only existing chromosomes (after Yuanhao's email)
+    k <- unique(gen.info$chr)
+    k <- k[!is.na(k)]
+    if (length(k)==22)
+      k <- c(1:22)
+    else if (length(k)==24)
+      k <- c(1:24)
+    else
+      stop("Data must have either all autosomes or complete genome")
     
     Segments <-  WextIextToSegments(object[[1]])
     Segments$chr  <-  attr(object,"chr")[[1]]
