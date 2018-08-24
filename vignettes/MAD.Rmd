@@ -193,12 +193,15 @@ plotQMosaic(example, sample="CONTROL191", chr=20,
 We can also zoom out the region of interest. For instance, let us better visualize the second alteration of CONTROL191 individual that can be accessed by
 
 ```{r roi}
-mosaics[42]
+library(GenomicRanges)
+mosaics[mosaics$sample=="CONTROL191" &
+          seqnames(mosaics)=="chr20"]
 ```
 
 ```{r zoomPlotControl191, fig.height=10}
 plotZoomQMosaic(example, sample="CONTROL191", chr=20,
-            regions = mosaics[42])
+            regions = mosaics[mosaics$sample=="CONTROL191" &
+                                seqnames(mosaics)=="chr20"])
 ```
 
 We can also visualize all the individuals having an alteration in a given genomic region (passed as a `GenomicRange` that can be easily created using `GRanges` function) using `plotCNV` function from `R-GADA` package indicating `mosaic=TRUE`. The function requires annotation from `Homo.sapiens` and the `Gviz` library. Genes can be annotated by setting `drawGenes = TRUE` By default, it depicts mosaic gains are in green and loses in blue, UPD are in orange, trisomies in tomato and LOH in red.

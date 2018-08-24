@@ -8,14 +8,15 @@
 #' @param MarkerIdCol The column in 'file' containing the name of the marker. Default first column
 #' @param ChrNameCol The column in 'file' containing the chromosome. Default second column
 #' @param ChrPosCol The column in 'file' containing the genomic position. Default third column
-#' @param orderProbes used when sort is TRUE. See details
+#' @param sort should data be sorted by genomic position? The default is TRUE.
+#' @param orderProbes used to avoid sorting
 #' @param sep how data columns are separated. Default by tab
 #' @param saveGenInfo Should annotation data be saved? The default is TRUE. See details
 
 setupGADA.B.deviation <-
 function (file, NumCols, GenoCol, log2ratioCol, BAFcol, 
           name.geno = c("AA", "AB", "BB"), MarkerIdCol = 1, 
-          ChrNameCol = 2, ChrPosCol = 3, 
+          ChrNameCol = 2, ChrPosCol = 3, sort = TRUE, 
           orderProbes, sep = "\t", saveGenInfo = TRUE) 
 {
     if (missing(GenoCol)) 
@@ -29,6 +30,10 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol,
     x <- fread(file, data.table = FALSE)
     if (!missing(orderProbes))
      x <- x[orderProbes,]
+    else {
+      if (sort)
+        x <- x[order(x[,ChrNameCol], x[, ChrPosCol]), ]
+    }
     
     gg <- x[, GenoCol]
     baf <- as.numeric(x[, BAFcol])

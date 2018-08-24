@@ -7,7 +7,7 @@
 #' @param ChrNameCol The column in 'file' containing the chromosome. Default second column
 #' @param ChrPosCol The column in 'file' containing the genomic position. Default third column
 #' @param mc.cores number of cores to be used when using multiple cores (see argument 'mc.cores' from 'mclapply' function of parallel library) 
-#' @param ... Other arguments passed through 'setupGADAIllumina'
+#' @param ... Other arguments passed through 'setupGADA'
 
 setupParGADA.B.deviation <- 
   function(folder, files, verbose=TRUE,
@@ -46,7 +46,6 @@ setupParGADA.B.deviation <-
 
   if (sort)
    {
-    
 # mitocondrial?
     mito <- is.na(gen.info$chr) 
     gen.info <- gen.info[!mito,]
@@ -77,6 +76,7 @@ setupParGADA.B.deviation <-
     select <- rownames(gen.info)
    } 
   
+  gen.info$chr <- as.factor(gen.info$chr)
   save(gen.info, file="SBL/gen.info.Rdata", compress=TRUE)
    
 
@@ -130,7 +130,7 @@ setupParGADA.B.deviation <-
   }
 
 
-   error<-sum(unlist(lapply(res, function(x) inherits(x, "try-error"))))
+   error <- sum(unlist(lapply(res, function(x) inherits(x, "try-error"))))
 
    if (error>0)
     {
@@ -143,7 +143,6 @@ setupParGADA.B.deviation <-
 
  ans<-getwd()
  class(ans)<-"parGADA"
- attr(ans,"type")<-"Illumina"
  attr(ans,"labels.samples")<-gsub("sample.","",gsub(".txt","",files))
  attr(ans,"Samples")<-length(files)
  attr(ans,"b.deviation")<-TRUE
