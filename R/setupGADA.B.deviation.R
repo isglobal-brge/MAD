@@ -5,6 +5,7 @@
 #' @param log2ratioCol The column in 'file' containing log2ratio intensities
 #' @param BAFCol The column in 'file' containing B-allele frequency (BAF)
 #' @param name.geno the name of the genotypes (default "AA", "AB" and "BB)
+#' @param chrs The names of the chromosomes. Default 1, ..., 22, X, Y
 #' @param MarkerIdCol The column in 'file' containing the name of the marker. Default first column
 #' @param ChrNameCol The column in 'file' containing the chromosome. Default second column
 #' @param ChrPosCol The column in 'file' containing the genomic position. Default third column
@@ -14,10 +15,10 @@
 #' @param saveGenInfo Should annotation data be saved? The default is TRUE. See details
 
 setupGADA.B.deviation <-
-function (file, NumCols, GenoCol, log2ratioCol, BAFcol, 
-          name.geno = c("AA", "AB", "BB"), MarkerIdCol = 1, 
-          ChrNameCol = 2, ChrPosCol = 3, sort = TRUE, 
-          orderProbes, sep = "\t", saveGenInfo = TRUE) 
+function (file, NumCols, GenoCol, log2ratioCol, BAFcol,
+          name.geno = c("AA", "AB", "BB"), chrs= c(1:22, "X", "Y"),
+          MarkerIdCol = 1,  ChrNameCol = 2, ChrPosCol = 3, 
+          sort = TRUE,  orderProbes, sep = "\t", saveGenInfo = TRUE) 
 {
     if (missing(GenoCol)) 
         stop("Missing GenoCol. Please, indicate which column of the file contains the genotypes")
@@ -32,9 +33,9 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol,
      x <- x[orderProbes,]
     else {
       if (sort)
-        x <- x[order(x[,ChrNameCol], x[, ChrPosCol]), ]
+        x <- x[order(match(x[,ChrNameCol], chrs), x[, ChrPosCol]), ]
     }
-    
+   
     gg <- x[, GenoCol]
     baf <- as.numeric(x[, BAFcol])
     baf[is.na(baf)] <- -999
@@ -86,7 +87,7 @@ function (file, NumCols, GenoCol, log2ratioCol, BAFcol,
     attr(ans, "Bdev") <- TRUE
     if (!saveGenInfo) 
       {
-        attr(ans, "gen.info") <- TRUE
+        attr(ans, "gen.info") <- FALSE
         ans$geno <- geno
       }
     class(ans) <- "setupGADA"

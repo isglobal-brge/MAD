@@ -160,6 +160,13 @@ mosaics
 
 The column `State` is a preliminary attempt to classify mosaic alterations after MAD calling process based on log2-ratio segment values (LRR) together with the percentage of normal heterozygous (BAF $\sim$ 0.5) and homozygous probes. The number codes correspond to the following abnormalities: UPD (1), deletion (2), duplication (3), trisomy (4) and LOH (5). It is recommendable to check called segments by making chromosome plots and observing LRR and BAF values to confirm those segments with limit cut-off values. The column `Bdev` stands for B-deviation that can be used to estimate cellularity. Our experience by analyzing several real datasets is that the method is highly sensible to detect alterations having B-deviations larger than 0.05.
 
+LOH can be removed from the candidate list by simply
+
+```{r rmLOH}
+mosaics <- subset(mosaics, State!=5)
+moasics
+```
+
 For those users who are not familiar with `GenomicRanges` the resulting information can be obtained as a `data.frame` and exported into a text file by simply writting:
 
 ```
@@ -180,6 +187,7 @@ and then the new altered regions can be obtained by:
 ```
 mosaics2 <- getMosaics(example) 
 ```
+
 # Data visualization
  
 The user can visually inspect the BAF and LRR of given region to verify wheather it is a real mosaic alteration. The function `plotQMosaic` can be used to this end: 

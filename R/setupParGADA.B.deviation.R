@@ -1,5 +1,6 @@
 #' A parallel version of setupGADA.B.deviation function
 #' @param folder The folder where data is stored. Not required if the working directory contains a 'rawData' folder
+#' @param chrs The names of the chromosomes. Default 1, ..., 22, X, Y
 #' @param files The names of the files with pennCNV-format fiels. Not required. By default all files in the 'rawData' folder are analyzed
 #' @param verbose Should information about process be printed in the console? The default is TRUE
 #' @param sort Should data be sorted by genomic position? Default is TRUE
@@ -10,7 +11,8 @@
 #' @param ... Other arguments passed through 'setupGADA'
 
 setupParGADA.B.deviation <- 
-  function(folder, files, verbose=TRUE,
+  function(folder, files, chrs = c(as.character(1:22), "X", "Y"),
+           verbose=TRUE,
            sort=TRUE, MarkerIdCol = 1, 
            ChrNameCol = 2, ChrPosCol = 3,
            mc.cores=1, ...)
@@ -52,11 +54,11 @@ setupParGADA.B.deviation <-
 
     gen.info$chr[gen.info$chr=="XY"] <- "X"
     
-    gen.info <- gen.info[gen.info$chr%in%
-                           c(as.character(1:22), "X", "Y"),]
-    
-    o<-order(gen.info$chr, gen.info$position)
+    gen.info <- gen.info[gen.info$chr%in%chrs,]
+
+    o <- order( match(gen.info$chr, chrs), gen.info$position)
     gen.info<-gen.info[o,]
+    
     attr(gen.info,"sort") <- TRUE
     attr(gen.info,"orderProbe") <- o
     select <- rownames(gen.info)
@@ -68,15 +70,14 @@ setupParGADA.B.deviation <-
     gen.info <- gen.info[!mito,]
     gen.info$chr[gen.info$chr=="XY"] <- "X"
     
-    gen.info <- gen.info[gen.info$chr%in%
-                           c(as.character(1:22), "X", "Y"),]
+    gen.info <- gen.info[gen.info$chr%in%chrs,]
     
     attr(gen.info,"sort") <- FALSE
     attr(gen.info,"orderProbe") <- 1:nrow(gen.info)
     select <- rownames(gen.info)
    } 
   
-  gen.info$chr <- as.factor(gen.info$chr)
+  gen.info$chr <- factor(gen.info$chr, levels=chrs)
   save(gen.info, file="SBL/gen.info.Rdata", compress=TRUE)
    
 

@@ -13,7 +13,7 @@ summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp,
   if (which.ok==0)
     stop ("which should be 'Gains', 'Loses' or 'both' ")
   
-  gen.info <- attr(object,"gen.info")
+  gen.info <- attr(object, "gen.info")
   
   LRR <- object2$LRR
   Bdev.orig <- object2$Bdev.original.scale
@@ -104,9 +104,8 @@ summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp,
     
     for (i in 2:length(k))
     {
-      
       temp <- WextIextToSegments(object[[i]]) 
-      chr  <-  attr(object,"chr")[[i]] 
+      chr  <-  levels(gen.info$chr)[[i]] 
       o <- gen.info$chr==chr
       LRR.i <- LRR[o]
       Bdev.orig.i <- Bdev.orig[o]
@@ -273,8 +272,8 @@ summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp,
   #
   if (!is.null(gen.info)) # JRG Oct'09
   {
-    ini <- Segments[,1]
-    end <- Segments[,2]
+    ini <- Segments[,1] # changed 08/2018 bad annot
+    end <- Segments[,2] # changed 08/2018 bad annot
     Segments[,1] <- gen.info[ini,3]
     Segments[,2] <- gen.info[end,3]
   }
@@ -377,7 +376,7 @@ summary.Bdeviation  <- function(object, object2, which="both", T, BaseAmp,
     cat(" Number of segments = ",K,"\n")
     cat(" Base Amplitude of quantile normalized B-deviation: chr 1:22:", round(BaseAmp.all[1],4), " chr X:", round(BaseAmp.all[2],4), " chr Y:", round(BaseAmp.all[3],4),"\n", sep="")
     cat("------------------------------------------------------------- \n") 
-    cat(" Mosaics (1), LOH (2)\n")
+    cat(" Mosaics (1), LOH (5)\n")
     cat("------------------------------------------------------------- \n") 
     print(Segments[Segments$State!=0,])
     
