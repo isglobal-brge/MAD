@@ -14,8 +14,6 @@
 # Output files from R CMD check
  /*.Rcheck/
 
-rawData/
-
 # RStudio files
 .Rproj.user/
 *.Rproj
@@ -23,6 +21,9 @@ rawData/
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+
+rawData/
+SBL/
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
