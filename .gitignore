@@ -19,9 +19,6 @@
 *.Rproj
 
 # produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-
 rawData/
 SBL/
 
