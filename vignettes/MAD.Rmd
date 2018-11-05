@@ -60,9 +60,8 @@ Detection of mosaic alterations enforces a strict directory structure on the wor
     - CONTROL191.txt
 
 
-Notice that _rawData_ directory contains all data files corresponding to each individual from a particular assay. Each text file must be prepared in pennCNV format [http://http://penncnv.openbioinformatics.org](http://http://penncnv.openbioinformatics.org). This can be performed by using the BeadStudio tool when analyzing Illumina data (see [http://www.illumina.com/](http://www.illumina.com/), or other Bioconductor packages if Affymetrix SNP data is analyzed: _crlmm_, _affy2sv_, ...). This is the structure of a given  example: 
+Notice that _rawData_ directory contains all data files corresponding to each individual from a particular assay. Each text file must be prepared in pennCNV format [http://http://penncnv.openbioinformatics.org](http://http://penncnv.openbioinformatics.org). This can be performed by using the BeadStudio tool when analyzing Illumina data (see [http://www.illumina.com/](http://www.illumina.com/)), or Affymetrix power tools (see [https://www.affymetrix.com/](https://www.affymetrix.com/) or other Bioconductor packages if Affymetrix SNP data is analyzed: _crlmm_, _affy2sv_, etc. This is the structure of a given example: 
 
-  
 ```
 Name       Chr Position   Log.R.Ratio B.Allele.Freq GType
 rs758676   7   12878632	  0.1401      0.4977        AB
@@ -72,7 +71,7 @@ rs17126880 1   64922104	  0.0478      0.9910        AA
 rs12831433 12  4995220	 -0.1661      0.0000        AA
 ```
 
-\textcolor{red} {It is important to mention} that all files included in the folder _rawData_ must belong to the same type of array (e.g. same number of probes) because the annotation data is obtained from one of these files. If samples have been analyzed using different platforms, the best option is to create another working directory containing another _rawData_ folder. 
+\textcolor{red}{NOTE:} It is important to mention that all files included in the folder _rawData_ must belong to the same type of array (e.g. same number of probes) because the annotation data is obtained from one of these files. If samples have been analyzed using different platforms, the best option is to create another working directory containing another _rawData_ folder. 
 
 # Importing array data
 
@@ -92,7 +91,7 @@ files <- list.files(ss1)
 file.copy(file.path(ss1,files), ss2)
 ```
 
-As a result, our working directory contains a folder called `rawData` containing all the files we want to process. 
+As a result, our working directory contains a folder called `rawData` having all the files we want to process. 
 
 ```{r show_wd}
 dir()
@@ -164,7 +163,7 @@ LOH can be removed from the candidate list by simply
 
 ```{r rmLOH}
 mosaics <- subset(mosaics, State!=5)
-moasics
+mosaics
 ```
 
 For those users who are not familiar with `GenomicRanges` the resulting information can be obtained as a `data.frame` and exported into a text file by simply writting:
@@ -219,6 +218,14 @@ library(Gviz)
 library(Homo.sapiens)
 rr <- GRanges("chr16:63.5e6-67.0e6")
 plotCNVs(mosaics, range=rr, mosaic=TRUE, drawGenes = TRUE)
+```
+
+
+Mosaic segments at individual level can be plotted using `GenVisR` Bioconductor package. The legend correspond to: UPD (1), deletion (2), duplication (3), trisomy (4).
+
+```{r plotSegments, fig.width=8, fig.height=4}
+library(ggplot2)
+plotSegments(mosaics)
 ```
 
 

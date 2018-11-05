@@ -7,7 +7,7 @@
 #' @param MarkerIdCol The column in 'file' containing the name of the marker. Default first column
 #' @param ChrNameCol The column in 'file' containing the chromosome. Default second column
 #' @param ChrPosCol The column in 'file' containing the genomic position. Default third column
-#' @param mc.cores number of cores to be used when using multiple cores (see argument 'mc.cores' from 'mclapply' function of parallel library) 
+#' @param mc.cores number of cores to be used when using multiple cores (see argument 'mc.cores' from 'mclapply' function of 'parallel' library) 
 #' @param ... Other arguments passed through 'setupGADA'
 
 setupParGADA.B.deviation <- 

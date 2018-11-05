@@ -7,7 +7,8 @@ export(
   addAnnot,
   plotQMosaic,
   plotZoomQMosaic,
-  getMosaics
+  getMosaics,
+  plotSegments
 )
 
 S3method(summary, Bdeviation)
