@@ -3,7 +3,7 @@ Type: Package
 Title: Mosaic Alteration Detector(MAD)
 Version: 1.1.2
 Date: 2018-08-23
-Depends: R (>= 3.4.0), gada
+Depends: R (>= 3.4.0), gada, data.table
 Imports: parallel
 Author: Juan R Gonzalez
 Maintainer: Juan R Gonzalez <juanr.gonzalez@isglobal.org>
