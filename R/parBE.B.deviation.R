@@ -33,14 +33,20 @@ parBE.B.deviation<-function(x, Samples, T, MinSegLen,
     {
       if (verbose)
        cat("   Array #",i,"... ")  
-      load(file.path(x, paste0("SBL/sbl",i)))
-      attr(step1,"gen.info")<-gen.info
-      step2<-BackwardElimination(step1, T=T, MinSegLen=MinSegLen)
-      load(file.path(x, paste0("SBL/setupGADA",i)))
-      ans<-summary.Bdeviation(step2, temp, print=FALSE, ...)
-      save(ans, step2, file=file.path(x, paste0("SBL/segments",i)),
+      file.i <- file.path(x, paste0("SBL/sbl",i))
+      if (exists(file.i)){
+        load(file.i)
+        attr(step1,"gen.info")<-gen.info
+        step2<-BackwardElimination(step1, T=T, MinSegLen=MinSegLen)
+        load(file.path(x, paste0("SBL/setupGADA",i)))
+        ans<-summary.Bdeviation(step2, temp, print=FALSE, ...)
+        save(ans, step2, file=file.path(x, paste0("SBL/segments",i)),
            compress=TRUE)
-      ans$sample<-labels[i]
+        ans$sample<-labels[i]
+      }
+      else{
+        ans <- step2 <- NULL
+      }
       ans     
     }
 
