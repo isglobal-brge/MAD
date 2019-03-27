@@ -36,3 +36,4 @@ SBL/
 # C++
 *.o
 *.dll
+.Rproj.user
