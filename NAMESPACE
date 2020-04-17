@@ -11,6 +11,8 @@ export(
   plotSegments
 )
 
+import(gada)
+
 S3method(summary, Bdeviation)
 
 importFrom("parallel", "mclapply")
